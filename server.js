@@ -86,6 +86,6 @@ router.post('/signin', function (req, res) {
 
 app.use('/', router);
 app.listen(process.env.PORT || 8080);
-module.exports = app; // for testing only
+// module.exports = app; // for testing only
 
 
