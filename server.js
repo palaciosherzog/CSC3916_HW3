@@ -5,12 +5,14 @@ Description: Movie API using MongoDB
 */
 
 var express = require('express');
+var http = require('http');
 var bodyParser = require('body-parser');
 var passport = require('passport');
 var authJwtController = require('./auth_jwt');
 var jwt = require('jsonwebtoken');
 var cors = require('cors');
 var User = require('./Users');
+var Movie = require('./Movies');
 
 var app = express();
 app.use(cors());
@@ -20,24 +22,6 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(passport.initialize());
 
 var router = express.Router();
-
-function getJSONObjectForMovieRequirement(req) {
-    var json = {
-        headers: "No headers",
-        key: process.env.UNIQUE_KEY,
-        body: "No body"
-    };
-
-    if (req.body != null) {
-        json.body = req.body;
-    }
-
-    if (req.headers != null) {
-        json.headers = req.headers;
-    }
-
-    return json;
-}
 
 router.post('/signup', function (req, res) {
     if (!req.body.username || !req.body.password) {
@@ -84,8 +68,28 @@ router.post('/signin', function (req, res) {
     })
 });
 
+router.route('/movies')
+    .post(authJwtController.isAuthenticated, function (req, res) {
+        var newMovie = new Movie();
+        newMovie.title = req.body.title;
+        newMovie.yearReleased = req.body.yearReleased;
+        newMovie.genre = req.body.genre;
+        newMovie.actors = req.body.actors;
+        newMovie.save(function (err) {
+            if (err) {
+                return res.status(400).json(err);
+            }
+            res.json({ success: true, msg: 'Successfully created new movie.' })
+        });
+    })
+
 app.use('/', router);
+
+app.use(function (req, res) {
+    res.status(405).send("Method not allowed");
+});
+
 app.listen(process.env.PORT || 8080);
-module.exports = app; // for testing only
+// module.exports = app; // for testing only
 
 
