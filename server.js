@@ -5,6 +5,7 @@ Description: Movie API using MongoDB
 */
 
 var express = require('express');
+var http = require('http');
 var bodyParser = require('body-parser');
 var passport = require('passport');
 var authJwtController = require('./auth_jwt');
