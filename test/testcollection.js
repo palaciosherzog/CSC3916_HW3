@@ -152,6 +152,65 @@ describe('All Tests', () => {
                 });
         });
 
+        it('it should fail signing up with an invalid password', (done) => {
+            chai.request(server)
+                .post('/signup')
+                .send({
+                    username: 'newemail@email.com',
+                    password: '123@abc'
+                })
+                .end((err, res) => {
+                    //follow-up to get the JWT token from signing in
+                    chai.request(server)
+                        .post('/signin')
+                        .send({
+                            username: 'newemail@email.com',
+                            password: 'adjfad;fs'
+                        })
+                        .end((err, res) => {
+                            console.log(res.body);
+                            res.should.have.status(401);
+                            res.body.success.should.be.eql(false);
+                            done();
+                        });
+                });
+        });
+
+        it('it should fail when signing in with an user that doesnt exist', (done) => {
+            chai.request(server)
+                .post('/signin')
+                .send({ name: 'test', username: 'thisemaildoesntexist@gmail.com', password: 'no' })
+                .end((err, res) => {
+                    console.log(res.body);
+                    res.should.have.status(401);
+                    res.body.success.should.be.eql(false);
+                    done();
+                });
+        });
+
+        it('it should fail when signing in without a password', (done) => {
+            chai.request(server)
+                .post('/signup')
+                .send({
+                    username: 'newemail@email.com',
+                    password: '123@abc'
+                })
+                .end((err, res) => {
+                    //follow-up to get the JWT token from signing in
+                    chai.request(server)
+                        .post('/signin')
+                        .send({
+                            username: 'newemail@email.com'
+                        })
+                        .end((err, res) => {
+                            console.log(res.body);
+                            res.should.have.status(401);
+                            res.body.success.should.be.eql(false);
+                            done();
+                        });
+                });
+        });
+
         it('it should return an error when signing up with an already used email', (done) => {
             let new_login_details = JSON.parse(JSON.stringify(login_details));
             new_login_details.username = 'anewemail@email.com';
@@ -173,7 +232,7 @@ describe('All Tests', () => {
         });
     });
 
-    describe('/movies*', () => {
+    /*describe('/movies*', () => {
         let token = '';
         // before this test suite, sign up and sign in & save token
         before((done) => {
@@ -486,5 +545,5 @@ describe('All Tests', () => {
                     });
             });
         });
-    });
+    });*/
 });
