@@ -6,11 +6,11 @@ mongoose.Promise = global.Promise;
 try {
     mongoose.connect(
         process.env.DB,
-        { useNewUrlParser: true, useUnifiedTopology: true },
-        () => console.log('connected')
+        { useNewUrlParser: true, useUnifiedTopology: true }
     );
 } catch (error) {
-    console.log('could not connect');
+    console.log('Movies file could not connect using mongoose');
+    console.log(error);
 }
 mongoose.set('useCreateIndex', true);
 
@@ -22,7 +22,7 @@ var ActorSchema = new Schema({
 
 // movie schema
 var MovieSchema = new Schema({
-    title: { type: String, required: true },
+    title: { type: String, required: true, index: { unique: true } },
     yearReleased: { type: Number, required: true },
     genre: {
         type: String,
@@ -41,7 +41,7 @@ var MovieSchema = new Schema({
     actors: {
         type: [ActorSchema],
         required: true,
-        validate: [v => v.length >= 3, 'too few']
+        validate: [v => v.length >= 3, 'Path `{PATH}` needs at least 3 items']
     }
 });
 
