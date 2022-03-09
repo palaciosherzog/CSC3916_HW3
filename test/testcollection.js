@@ -232,7 +232,7 @@ describe('All Tests', () => {
         });
     });
 
-    /*describe('/movies*', () => {
+    describe('/movies*', () => {
         let token = '';
         // before this test suite, sign up and sign in & save token
         before((done) => {
@@ -379,7 +379,7 @@ describe('All Tests', () => {
                     });
             });
 
-            after((done) => {
+            /*after((done) => {
                 chai.request(server)
                     .delete('/movies/'+movie_details[0].title)
                     .set('Authorization', token)
@@ -406,7 +406,7 @@ describe('All Tests', () => {
                                     });
                             });
                     });
-            });
+            });*/
 
             it('it should get all the movies added', (done) => {
                 chai.request(server)
@@ -545,5 +545,5 @@ describe('All Tests', () => {
                     });
             });
         });
-    });*/
+    });
 });
